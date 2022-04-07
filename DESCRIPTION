@@ -1,0 +1,13 @@
+Package: yOUrEmail
+Type: Package
+Title: An Automated Workflow for OU Paper Submissions
+Version: 0.1.0
+Author: Sally A.M. Hogenboom
+Maintainer: Sally A.M. Hogenboom <sally.hogenboom@gmail.com>
+Description: The Teachers of the Psychology Department of the Open Universiteit (NLD) receive the to-be-graded papers via their work e-mail. Each teacher then has to perform a set of manual steps such as saving the attachments to a local folder. This package serves to reduce the workload of teachers by automating some of these steps.
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
