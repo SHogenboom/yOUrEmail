@@ -8,25 +8,22 @@
 #' That means retakes and feedback rounds (e.g., Literatuurstudie) are not
 #' handled by the submission system.
 #'
+#' @param outlook no default. Authenticate & retrieve your outlook environment
 #' @param submissions_folder default: "Inbox". Specify the name of the folder (characters)
 #' in which the submissions emails are stored. If you have an automatic rule setup
 #' which moves the submissions to a different folder (e.g., "Nakijken") specify the name
 #' of that folder.
 #' @param submissions_email default: "submit@oupsy.nl". Specify the email address from
 #' which the submissions are received.
-#' @param n_latest_emails default: 10. Specify the maximum number of new submissions
-#' expected in a single day (N = 10). Increase this number so that
-#' all new submissions will be retrieved but only a minimal number of 'non-relevant' emails
-#' will be included.
-#'
+#' @param email_status default: unread. Options include: "unread" (only new submissions),
+#' "read" (only processed submissions), "all" (all submissions)
+#.'
 #' @return a list of emails which all have the class "ms_outlook_email".
 #'
-get_submissions <- function(submissions_folder = "Inbox",
-                                        submissions_email = "submit@oupsy.nl",
-                                        n_latest_emails = 10) {
-
-  # Authenticate & get Outlook Environment
-  outlook <- Microsoft365R::get_business_outlook()
+get_submissions <- function(outlook,
+                            submissions_folder = "Inbox",
+                            submissions_email = "submit@oupsy.nl",
+                            email_status = "unread") {
 
   # Get submissions
   submissions_from_system <-
@@ -38,10 +35,13 @@ get_submissions <- function(submissions_folder = "Inbox",
       list_emails(
       search =
         glue::glue(
-          "from:{submissions_email}"
-        ),
-      # Retieve only the n last email to reduce processing time
-      n = n_latest_emails
+          "from:{submissions_email}",
+          dplyr::case_when(
+            email_status == "all" ~ "",
+            email_status == "read" ~ " AND isread:yes",
+            email_status == "unread" ~ " AND isread:no"
+          )
+        )
     )
 
   return(submissions_from_system)
