@@ -1,0 +1,170 @@
+---
+title: "Workflow for Automated Handling of Submission Emails"
+author: "Sally A.M. Hogenboom"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    self_contained: false
+vignette: >
+  %\VignetteIndexEntry{Receive & Process Submission Emails}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(yOUrEmail)
+library(magrittr)
+```
+
+# Authentication
+
+**Goal**
+
+Create a succesfull connection to our OU outlook environment. 
+This connection allows us to read/write/send emails from an R automated script.
+
+**Requirements**
+
+  * Login credentials for our OU outlook
+  * An active browser (e.g., Microsoft Edge)
+  * A Windows Computer
+  
+**Execution**
+
+```{r authentication}
+# Authenticate & get Outlook Environment
+  outlook <- Microsoft365R::get_business_outlook()
+```
+
+**Expected Behavior**
+
+Upon first login this code prompts a manual login process via the browser. Working with Windows/Microsoft Edge allows for our login credentials to be saved (automatically). Therefore, upon subsequent authentication the credentials will be updated (see message in code above).
+
+**Development Issues**
+
+1. It is highly plausible that this workflow only works with a Windows x Microsoft Edge combination. Workarounds for unattended scripts (i.e., no manual steps) are available via a [Microsoft365R vignette](https://cran.r-project.org/web/packages/Microsoft365R/vignettes/scripted.html). For the OU this is likely not a solution as they already have Azure accounts which are maintained by the IT department.
+1. I have not been able to implement a test for an unsuccessful authentication process (see `test-authentication.R`).
+
+# Retrieve Submissions
+
+**Goal**
+
+Retrieve the student submissions as received from the submission system that have
+not yet been read.
+
+**Requirements**
+
+  * Outlook Authentication
+  
+**Execution**
+
+* `outlook`: pass down the outlook environment achieved during succesfull authentication
+* `submissions_folder`: specify the folder where the submissions are received. 
+Some teachers have automated rules set-up which move the submissions to a different
+folder (e.g., 'Nakijken'). If this is the case, specify the exact name of the folder.
+* `submissions_email`: built-in option to allow for upcoming changes to the submissions system in the future.
+* `email_status`: unread/read/all
+
+```{r get-submissions}
+submissions <- get_submissions(outlook,
+                               submissions_folder = "Inbox",
+                               submissions_email = "submit@oupsy.nl",
+                               email_status = "unread")
+```
+
+**Expected Behavior**
+
+* Retrieve a list of emails with class `ms_outlook_email`
+
+**Development Issues**
+
+None
+
+# Extract Submission Information
+
+**Goal**
+
+Process the contents of the email to extract the relevant information:
+
+  * `course_run` courses can have different versions (i.e., runs). The course run determines which grading form should be used for the submission.
+  * `student_number` unique numeric identifier for each student.
+  * `student_name` name as parsed from the student's email account.
+  * `student_email` email adress provided by the student which is used to communicate the attained grade with students.
+  * `submission_date` date on which the email/submission was received.
+  * `submission_note` students have the option to add a note for the teacher. If such a note was provided it is also extracted.
+  
+Added additional relevant content:
+  * `grade_before_date` compute the date before which the grading should be finished (20 working days from submission).
+  * `grade_status` add a default 'to do' status for use in the grading_overview (later phase).
+
+**Requirements**
+
+  * An email from the submission system with class `ms_outlook_email`
+  
+**Execution**
+
+```{r get-submission-info}
+#### ONE EMAIL ####
+submission_info <- get_submission_info(submissions[[1]])
+
+#### MULTIPLE EMAILS ####
+multi_submission_info <-
+    lapply(
+      X = submissions,
+      FUN = function(email) {
+        get_submission_info(email)
+      }
+    ) %>%
+    # Combine to a tibble
+    dplyr::bind_rows() %>%
+    # Remove duplicates which can arise due to reply all errors
+    unique()
+```
+
+**Expected Behavior**
+
+A tibble with `r ncol(submission_info)` columns (`r glue::glue_collapse(colnames(submission_info), sep = ", ", last = ", en ")`). The number of rows depends on
+the number of emails that were processed (i.e., `nrow(multi_submission_info) == length(submissions)`).
+
+**Development Issues**
+
+1. Additional information to add:
+
+    * `course` the conventional name for the course (e.g., Onderzoekspracticum Experimenteel Onderzoek).
+    * `course_id` the numeric identifier for the course. This can be the same as the course_run if no versions of the course exist in the submission system. 
+
+1. Currently, when computing the `grade_before_date` a shortcut was made to
+compute the date with the number of working days from the `submission_date`. 
+In doing so, we do not account for national holidays such as Christmas or Koningsdag.
+Without accounting for these holidays the `grade_before_date` can at times be a
+couple of days earlier than necessary - but this does not affect the students negatively.
+
+1. Write tests for missing information in the emails.
+
+# TEMPLATE
+
+**Goal**
+
+
+**Requirements**
+
+  * ...
+  
+**Execution**
+
+```{r}
+
+```
+
+**Expected Behavior**
+
+**Development Issues**
+
+1. ...
+
+
