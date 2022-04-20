@@ -45,7 +45,7 @@ This connection allows us to read/write/send emails from an R automated script.
 
 Upon first login this code prompts a manual login process via the browser. Working with Windows/Microsoft Edge allows for our login credentials to be saved (automatically). Therefore, upon subsequent authentication the credentials will be updated (see message in code above).
 
-**Development Issues**
+**Development To Do's**
 
 1. It is highly plausible that this workflow only works with a Windows x Microsoft Edge combination. Workarounds for unattended scripts (i.e., no manual steps) are available via a [Microsoft365R vignette](https://cran.r-project.org/web/packages/Microsoft365R/vignettes/scripted.html). For the OU this is likely not a solution as they already have Azure accounts which are maintained by the IT department.
 1. I have not been able to implement a test for an unsuccessful authentication process (see `test-authentication.R`).
@@ -63,7 +63,7 @@ not yet been read.
   
 **Execution**
 
-* `outlook`: pass down the outlook environment achieved during succesfull authentication
+* `outlook`: pass down the outlook environment achieved during successful authentication
 * `submissions_folder`: specify the folder where the submissions are received. 
 Some teachers have automated rules set-up which move the submissions to a different
 folder (e.g., 'Nakijken'). If this is the case, specify the exact name of the folder.
@@ -81,7 +81,7 @@ submissions <- get_submissions(outlook,
 
 * Retrieve a list of emails with class `ms_outlook_email`
 
-**Development Issues**
+**Development To Do's**
 
 None
 
@@ -109,18 +109,14 @@ Added additional relevant content:
 **Execution**
 
 ```{r get-submission-info}
-#### ONE EMAIL ####
-submission_info <- get_submission_info(submissions[[1]])
-
-#### MULTIPLE EMAILS ####
-multi_submission_info <-
+submission_info <-
     lapply(
       X = submissions,
       FUN = function(email) {
         get_submission_info(email)
       }
     ) %>%
-    # Combine to a tibble
+    # Combine list of tibbles to one tibble
     dplyr::bind_rows() %>%
     # Remove duplicates which can arise due to reply all errors
     unique()
@@ -129,9 +125,9 @@ multi_submission_info <-
 **Expected Behavior**
 
 A tibble with `r ncol(submission_info)` columns (`r glue::glue_collapse(colnames(submission_info), sep = ", ", last = ", en ")`). The number of rows depends on
-the number of emails that were processed (i.e., `nrow(multi_submission_info) == length(submissions)`).
+the number of emails that were processed (i.e., `nrow(submission_info) == length(submissions)`).
 
-**Development Issues**
+**Development To Do's**
 
 1. Additional information to add:
 
@@ -144,7 +140,7 @@ In doing so, we do not account for national holidays such as Christmas or Koning
 Without accounting for these holidays the `grade_before_date` can at times be a
 couple of days earlier than necessary - but this does not affect the students negatively.
 
-1. Write tests for missing information in the emails.
+1. Write tests to account for emails with missing information. Low priority due to the fact that emails are automatically generated with a standard structure.
 
 # TEMPLATE
 
@@ -163,7 +159,7 @@ couple of days earlier than necessary - but this does not affect the students ne
 
 **Expected Behavior**
 
-**Development Issues**
+**Development To Do's**
 
 1. ...
 
