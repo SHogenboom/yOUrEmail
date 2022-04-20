@@ -31,7 +31,7 @@ get_submission_info <- function(email,
 
   #### COURSE INFO ####
   # Load course data from package
-  load(here::here("data", "course_codes.rda"))
+  data("course_codes")
 
   # Identify the course:
   course <-
