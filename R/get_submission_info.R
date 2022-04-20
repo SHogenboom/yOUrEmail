@@ -29,18 +29,58 @@ get_submission_info <- function(email,
     # Remove redundant whitespaces
     stringr::str_squish()
 
-  #### COURSE RUN ####
-  # Identify the course run:
-  course_run <-
+  #### COURSE INFO ####
+  # Load course data from package
+  load(here::here("data", "course_codes.rda"))
+
+  # Identify the course:
+  course <-
     stringr::str_extract(
       string = subject,
       # Two characters (e.g., PB) followed by 1 or more numbers
       pattern = "[A-Za-z]{2}[0-9]{1,}"
-    )
+    ) %>%
+    # Convert any lowercase letters to uppercase for consistency
+    stringr::str_to_upper(.)
 
-  # Save to output
-  dat %<>%
-    tibble::add_column("course_run" = course_run)
+  # The submission system sometimes includes only the course_id and sometimes
+  # the course_run.
+  if (course %in% course_codes$course_id) {
+    # The submission contains only the course_id
+    # It is not possible to know the course run because students can submit even
+    # after courses have finished.
+    dat %<>%
+      tibble::add_column("course_id" = course,
+                         "course_name" = course_codes %>%
+                           dplyr::filter(course_id == course) %>%
+                           dplyr::select(course_name) %>%
+                           unique() %>%
+                           dplyr::pull(),
+                         "course_run" = NA,
+                         )
+  } else if (course %in% course_codes$course_run) {
+    # The submission contains the course_run
+    dat %<>%
+      tibble::add_column("course_id" = course_codes %>%
+                           dplyr::filter(course_run == course) %>%
+                           dplyr::select(course_id) %>%
+                           unique() %>%
+                           dplyr::pull(),
+                         "course_name" = course_codes %>%
+                           dplyr::filter(course_run == course) %>%
+                           dplyr::select(course_name) %>%
+                           unique() %>%
+                           dplyr::pull(),
+                         "course_run" = course,
+      )
+  } else {
+    # If course info is not known leave empty
+    dat %<>%
+      tibble::add_column("course_id" = NA,
+                         "course_name" = NA,
+                         "course_run" = NA,
+      )
+  } # END IF
 
   #### STUDENT NUMBER ####
   # A sequence of 9 numbers
