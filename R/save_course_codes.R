@@ -40,8 +40,12 @@ save_course_codes <- function(filePath) {
       "course_run" = "Cursusrun"
     ) %>%
     # Extract course_names by removing the course codes
-    dplyr::mutate("course_name" = stringr::str_remove_all(string = course,
-                                                          pattern = "^(.*?) - "))
+    dplyr::mutate("course_name" = stringr::str_remove_all(
+      string = course,
+      pattern = "^(.*?) - "
+    )) %>%
+    # Remove redundant course column
+    dplyr::select(-course)
 
 
   # save contents for use in package
