@@ -74,11 +74,11 @@ get_submission_info <- function(email,
                          "course_run" = course,
       )
   } else {
-    # If course info is not known leave empty
+    # If course info is not known add the available information
     dat %<>%
-      tibble::add_column("course_id" = NA,
+      tibble::add_column("course_id" = course,
                          "course_name" = NA,
-                         "course_run" = NA,
+                         "course_run" = course,
       )
   } # END IF
 
