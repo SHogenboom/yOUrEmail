@@ -6,7 +6,7 @@ The purpose of this package is to deal with all manual steps outlined below.
 
 ## Current -Manual- Workflow
 
-1. Receive an E-mail from `submit@oupsy.nl` which contains:
+1. [DONE] Receive an E-mail from `submit@oupsy.nl` which contains:
     * The submission date; determines the deadline for grading (+20 working days)
     * The course / course version; determines which grading form should be used
     * Student Name; determines the 'aanhef' of the emails
@@ -14,9 +14,9 @@ The purpose of this package is to deal with all manual steps outlined below.
     * Student Email; determines to which e-mail adres the replies and grading are sent
     * Submission Notes; relevant notes as added by the student upon submission
     * The relevant files as attachments
-1. Send the student a confirmation email that the submission has been received.
-1. Create a Course > Course Version > Student_ID sub-folder
-1. Download attachments
+1. [DONE] Send the student a confirmation email that the submission has been received.
+1. [DONE] Create a Course > Course Version > Student_ID sub-folder
+1. [DONE] Download attachments
     * Save in the created folder
     * Clean-up filenames to keep only the standardized structure
 1. Add the correct grading form to the folder
