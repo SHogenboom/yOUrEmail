@@ -75,8 +75,9 @@ get_submission_info <- function(email,
       )
   } else {
     # If course info is not known add the available information
+    # Course IDs always consist of 2 letters followed by 4 numbers (total 6 characters)
     dat %<>%
-      tibble::add_column("course_id" = course,
+      tibble::add_column("course_id" = stringr::str_sub(course, 1, 6),
                          "course_name" = NA,
                          "course_run" = course,
       )
