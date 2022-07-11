@@ -1,7 +1,7 @@
 #' Download, Store, and Rename Attachments
 #'
 #' Each submission includes the relevant files as attachments. Usually at least
-#' one document is included which follows a standardized naming convenstion:
+#' one document is included which follows a standardized naming convention:
 #' course_run // type of document (e.g. 'verslag') // student name // student number
 #' // filename as provided by the student. // file extension.
 #' We save the files in the designated student folder and rename the file so that
@@ -25,10 +25,22 @@ download_attachments <- function(email,
     X = all_attachments,
     FUN = function(attachment) {
 
-      # Get attachment name
-      attachment_name <- attachment$properties$name
+      # Rename the attachment
+      # All files have the standardized structure followed by the students'
+      # ... file name included in [...]. We remove the students' file name
+      # ... as it will not follow a standardized format.
+      # In addition, sometimes this creates such long file names that they
+      # ... cannot be downloaded as is.
+      new_attachment_name <-
+        stringr::str_remove(
+          string = attachment$properties$name, # original file name
+          pattern = " \\[(.*?)\\]"
+        )
 
-      # Download the attachment with the original name
+      # Update the file's name
+      attachment$properties$name <- new_attachment_name
+
+      # Download the attachment with the updated name
       # NOTE: somehow this function does not allow storing in a destination
       # ... folder unless the specified name is the EXACT copy of the
       # ... file that is downloaded
@@ -36,27 +48,9 @@ download_attachments <- function(email,
       attachment$download(
         dest = here::here(
           student_folder,
-          attachment_name
+          attachment$properties$name
         ),
         overwrite = TRUE
-      )
-
-      # Rename the current file
-      # All files have the standardized structure followed by the students'
-      # ... file name included in [...]. We remove the students' file name
-      # ... as it will not follow a standardized format.
-      file.rename(
-        from = here::here(
-          student_folder,
-          attachment_name
-        ),
-        to = here::here(
-          student_folder,
-          stringr::str_remove(
-            string = attachment_name,
-            pattern = " \\[(.*?)\\]"
-          )
-        )
       )
     }
   )
