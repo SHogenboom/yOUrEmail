@@ -15,6 +15,11 @@ get_submission_info <- function(email,
   # Initialize output
   dat <- tibble::tibble(.rows = 1)
 
+  #### GRADE STATUS ####
+  # Add the default status 'to do' for later use in the grading overview
+  dat %<>%
+    tibble::add_column("status" = "To Do")
+
   # Process Email-Subject
   # The subject contains information on:
   # The course / course run
@@ -122,11 +127,11 @@ get_submission_info <- function(email,
   dat %<>%
     tibble::add_column(
       "submission_date" =
-        lubridate::as_date(
-          email$
-            properties$
-            createdDateTime
-        )
+          lubridate::as_date(
+            email$
+              properties$
+              createdDateTime
+          )
     )
 
   #### SUBMISSION NOTE ####
@@ -148,18 +153,15 @@ get_submission_info <- function(email,
 
 
   dat %<>%
-    tibble::add_column("submission_note" = submission_note)
+    tibble::add_column("student_submission_note" = ifelse(is.na(submission_note),
+                                                          "no student note",
+                                                          submission_note))
 
   #### GRADE BEFORE ####
   # Manually compute the date before which the submission should be graded.
   # Defaults to 20 working days from the submission date.
   dat %<>%
     tibble::add_column("grade_before_date" = .$submission_date + lubridate::wday(n_workdays))
-
-  #### GRADE STATUS ####
-  # Add the default status 'to do' for later use in the grading overview
-  dat %<>%
-    tibble::add_column("grade_status" = "To Do")
 
   return(dat)
 }
