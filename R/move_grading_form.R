@@ -18,24 +18,30 @@ move_grading_form <- function(grading_form_folder,
 
   # Not all courses contain course_run information in the submission details.
   if (is.na(submission_info$course_run)) {
-    file.copy(from = here::here(grading_form_folder,
-                                submission_info$course_id,
-                                glue::glue("{submission_info$course_id}.xlsx")),
-              to = here::here(student_folder,
-                              glue::glue("{submission_info$course_id} beoordeling {submission_info$student_name} ({submission_info$student_number}).xlsx")
-              ),
-              copy.date = FALSE,
-              overwrite = TRUE
-
+    file.copy(
+      from = here::here(
+        grading_form_folder,
+        submission_info$course_id,
+        glue::glue("{submission_info$course_id}.xlsx")
+      ),
+      to = here::here(
+        student_folder,
+        glue::glue("{submission_info$course_id} beoordeling {submission_info$student_name} ({submission_info$student_number}).xlsx")
+      ),
+      copy.date = FALSE,
+      overwrite = TRUE
     )
   } else {
     # Course contains a course_run specification which requires a distinct grading form
     file.copy(
-      from = here::here(grading_form_folder,
-                        submission_info$course_id,
-                        glue::glue("{submission_info$course_run}.xlsx")),
-      to = here::here(student_folder,
-                      glue::glue("{submission_info$course_id} beoordeling {submission_info$student_name} ({submission_info$student_number}).xlsx")
+      from = here::here(
+        grading_form_folder,
+        submission_info$course_id,
+        glue::glue("{submission_info$course_run}.xlsx")
+      ),
+      to = here::here(
+        student_folder,
+        glue::glue("{submission_info$course_id} beoordeling {submission_info$student_name} ({submission_info$student_number}).xlsx")
       ),
       copy.date = FALSE,
       overwrite = TRUE

@@ -17,7 +17,7 @@
 #' which the submissions are received.
 #' @param email_status default: unread. Options include: "unread" (only new submissions),
 #' "read" (only processed submissions), "all" (all submissions)
-#.'
+# .'
 #' @return a list of emails which all have the class "ms_outlook_email".
 #'
 get_submissions <- function(outlook,

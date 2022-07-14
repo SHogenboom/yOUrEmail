@@ -55,36 +55,39 @@ get_submission_info <- function(email,
     # It is not possible to know the course run because students can submit even
     # after courses have finished.
     dat %<>%
-      tibble::add_column("course_id" = course,
-                         "course_name" = course_codes %>%
-                           dplyr::filter(course_id == course) %>%
-                           dplyr::select(course_name) %>%
-                           unique() %>%
-                           dplyr::pull(),
-                         "course_run" = NA,
-                         )
+      tibble::add_column(
+        "course_id" = course,
+        "course_name" = course_codes %>%
+          dplyr::filter(course_id == course) %>%
+          dplyr::select(course_name) %>%
+          unique() %>%
+          dplyr::pull(),
+        "course_run" = NA,
+      )
   } else if (course %in% course_codes$course_run) {
     # The submission contains the course_run
     dat %<>%
-      tibble::add_column("course_id" = course_codes %>%
-                           dplyr::filter(course_run == course) %>%
-                           dplyr::select(course_id) %>%
-                           unique() %>%
-                           dplyr::pull(),
-                         "course_name" = course_codes %>%
-                           dplyr::filter(course_run == course) %>%
-                           dplyr::select(course_name) %>%
-                           unique() %>%
-                           dplyr::pull(),
-                         "course_run" = course,
+      tibble::add_column(
+        "course_id" = course_codes %>%
+          dplyr::filter(course_run == course) %>%
+          dplyr::select(course_id) %>%
+          unique() %>%
+          dplyr::pull(),
+        "course_name" = course_codes %>%
+          dplyr::filter(course_run == course) %>%
+          dplyr::select(course_name) %>%
+          unique() %>%
+          dplyr::pull(),
+        "course_run" = course,
       )
   } else {
     # If course info is not known add the available information
     # Course IDs always consist of 2 letters followed by 4 numbers (total 6 characters)
     dat %<>%
-      tibble::add_column("course_id" = stringr::str_sub(course, 1, 6),
-                         "course_name" = NA,
-                         "course_run" = course,
+      tibble::add_column(
+        "course_id" = stringr::str_sub(course, 1, 6),
+        "course_name" = NA,
+        "course_run" = course,
       )
   } # END IF
 
@@ -105,10 +108,10 @@ get_submission_info <- function(email,
     tibble::add_column(
       "student_name" =
         email$
-        properties$
-        ccRecipients[[1]]$
-        emailAddress$
-        name
+          properties$
+          ccRecipients[[1]]$
+          emailAddress$
+          name
     )
 
   #### EMAIL ADDRESS ####
@@ -117,21 +120,21 @@ get_submission_info <- function(email,
     tibble::add_column(
       "student_email" =
         email$
-        properties$
-        ccRecipients[[1]]$
-        emailAddress$
-        address
+          properties$
+          ccRecipients[[1]]$
+          emailAddress$
+          address
     )
 
   #### SUBMISSION DATE ####
   dat %<>%
     tibble::add_column(
       "submission_date" =
-          lubridate::as_date(
-            email$
-              properties$
-              createdDateTime
-          )
+        lubridate::as_date(
+          email$
+            properties$
+            createdDateTime
+        )
     )
 
   #### SUBMISSION NOTE ####
@@ -154,8 +157,9 @@ get_submission_info <- function(email,
 
   dat %<>%
     tibble::add_column("student_submission_note" = ifelse(is.na(submission_note),
-                                                          "no student note",
-                                                          submission_note))
+      "no student note",
+      submission_note
+    ))
 
   #### GRADE BEFORE ####
   # Manually compute the date before which the submission should be graded.

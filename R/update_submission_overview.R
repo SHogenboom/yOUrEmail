@@ -46,9 +46,9 @@ update_submission_overview <- function(submission_info,
     dplyr::arrange(
       dplyr::desc(status), # statuses: "To Do", "Feedback", "Herkansing", "Done"
       ifelse(status != "To Do",
-             dplyr::desc(grade_before_date),# closest to-do date at the top of the sheet.
-             grade_before_date) # most recent completed at the top
-
+        dplyr::desc(grade_before_date), # closest to-do date at the top of the sheet.
+        grade_before_date
+      ) # most recent completed at the top
     )
 
   #### INITIALIZE EMPTY EXCEL ####
@@ -122,7 +122,7 @@ update_submission_overview <- function(submission_info,
       valign = "center",
       wrapText = TRUE,
       border = "TopBottom",
-      borderColour = "#5F9F9F" #cadet blue
+      borderColour = "#5F9F9F" # cadet blue
     )
 
   openxlsx::addStyle(
