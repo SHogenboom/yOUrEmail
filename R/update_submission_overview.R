@@ -95,7 +95,9 @@ update_submission_overview <- function(submission_info,
       15.2, # student_email (with overflow)
       16.5, # submission_date
       25, # student_submission_note (with overflow)
-      29.3 # grade_before_date
+      19.15, # grade_before_date
+      11.7, # grade
+      25 # grading_notes
     )
   )
   #### STYLING ####
