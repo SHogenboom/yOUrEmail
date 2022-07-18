@@ -62,19 +62,20 @@ get_submission_info <- function(email,
           dplyr::select(course_name) %>%
           unique() %>%
           dplyr::pull(),
-        "course_run" = NA,
+        "course_run" = "*",
       )
-  } else if (course %in% course_codes$course_run) {
+  } else if (stringr::str_c(course, "B") %in% course_codes$course_run) {
+    # Add the 'B' to the course_runs as logged by us
     # The submission contains the course_run
     dat %<>%
       tibble::add_column(
         "course_id" = course_codes %>%
-          dplyr::filter(course_run == course) %>%
+          dplyr::filter(course_run == stringr::str_c(course, "B")) %>%
           dplyr::select(course_id) %>%
           unique() %>%
           dplyr::pull(),
         "course_name" = course_codes %>%
-          dplyr::filter(course_run == course) %>%
+          dplyr::filter(course_run == stringr::str_c(course, "B")) %>%
           dplyr::select(course_name) %>%
           unique() %>%
           dplyr::pull(),
@@ -86,7 +87,7 @@ get_submission_info <- function(email,
     dat %<>%
       tibble::add_column(
         "course_id" = stringr::str_sub(course, 1, 6),
-        "course_name" = NA,
+        "course_name" = "*",
         "course_run" = course,
       )
   } # END IF
@@ -171,7 +172,7 @@ get_submission_info <- function(email,
   # Initialize for manual completion
   dat %<>%
     tibble::add_column("assignment" = "#") %>%
-    tibble::add_column("graded_on" = lubridate::as_date(NA)) %>%
+    tibble::add_column("graded_on" = lubridate::today()) %>%
     tibble::add_column("grade" = numeric(1)) %>%
     tibble::add_column("grading_notes" = character(1))
 
