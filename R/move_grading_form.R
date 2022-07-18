@@ -17,7 +17,7 @@ move_grading_form <- function(grading_form_folder,
                               submission_info) {
 
   # Not all courses contain course_run information in the submission details.
-  if (is.na(submission_info$course_run)) {
+  if (submission_info$course_run == "*") {
     file.copy(
       from = here::here(
         grading_form_folder,
