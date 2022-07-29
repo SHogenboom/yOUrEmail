@@ -172,7 +172,8 @@ get_submission_info <- function(email,
   # Initialize for manual completion
   dat %<>%
     tibble::add_column("assignment" = "#") %>%
-    tibble::add_column("graded_on" = .$submission_date) %>%
+    tibble::add_column("graded_on" = lubridate::as_date(submission_date,
+                                                        format = "%d/%m/%Y")) %>%
     tibble::add_column("grade" = numeric(1)) %>%
     tibble::add_column("grading_notes" = character(1))
 
