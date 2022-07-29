@@ -22,11 +22,11 @@ The purpose of this package is to deal with all manual steps outlined below.
 1. [`move_grading_firm`] Add the correct grading form to the folder
 1. [`update_submission_overview`] Add a registration for the submission in the 'submission overview'
     * Allows a teacher to keep track of all open submissions & grading deadlines.
-1. Mark email as completed
+1. [`no function`] Mark email as completed
 1. Grade the paper (NOTE: cannot be done automatically!)
-1. Update the submission overview with the grade information, update status to 'DONE'
-1. Compress all relevant files into a .zip folder
-1. Send 'Beoordelings' Email
+1. [TO DO] Update the submission overview with the grade information, update status to 'DONE'
+1. [TO DO] Compress all relevant files into a .zip folder
+1. [TO DO] Send 'Beoordelings' Email
     * CC the examinator of the course
     * Add personalized grade information and pass/fail judgement
     * Include information on feedback, herkansingen, course evaluations
