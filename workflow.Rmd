@@ -1,0 +1,431 @@
+---
+title: "Workflow for Automated Handling of Submission Emails"
+author: "Sally A.M. Hogenboom"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    self_contained: false
+vignette: >
+  %\VignetteIndexEntry{Receive & Process Submission Emails}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(yOUrEmail)
+library(magrittr)
+```
+
+# Authentication
+
+**Goal**
+
+Create a successful connection to the outlook environment. 
+This connection allows us to read/write/send emails from an (automated) R script.
+
+**Requirements**
+
+  * Login credentials for our business outlook
+  * An active browser (e.g., Microsoft Edge)
+  * A Windows Computer
+  * `install.packages("httpuv")` 
+  
+**Execution**
+
+```{r authentication}
+# Authenticate & get Outlook Environment
+outlook <- Microsoft365R::get_business_outlook()
+```
+
+**Expected Behavior**
+
+Upon first login this code prompts a manual login process via the browser. Working with Windows/Microsoft Edge allows for our login credentials to be saved (automatically). Therefore, upon subsequent authentication the credentials will be updated (see message output in code above).
+
+**Development To Do's**
+
+1. It is highly plausible that this workflow only works with a `Windows` x `Microsoft Edge` combination. Workarounds for unattended scripts (i.e., no manual steps) are available via a [Microsoft365R vignette](https://cran.r-project.org/web/packages/Microsoft365R/vignettes/scripted.html).
+1. I have not been able to implement a test for an unsuccessful authentication process (see `test-authentication.R`).
+
+# Retrieve All Submissions
+
+**Goal**
+
+Retrieve all new (i.e., unread) emails from the submission system.
+
+**Requirements**
+
+  * [Outlook Authentication](#authentication)
+  
+**Execution**
+
+* `outlook`: pass down the outlook environment retrieved during successful authentication
+* `submissions_folder`: specify the folder where the submissions are received. 
+Some teachers have automated rules set-up which move the submissions to a different
+folder (e.g., 'Nakijken'). If this is the case, specify the exact name of that folder.
+* `submissions_email`: built-in option to allow for upcoming changes to the submissions system which will send the submissions from a different emailadres.
+* `email_status`: unread/read/all
+
+```{r get-submissions}
+submissions <- get_submissions(outlook,
+  submissions_folder = "Nakijken",
+  submissions_email = "submit@oupsy.nl",
+  email_status = "unread"
+)
+```
+
+**Expected Behavior**
+
+* Retrieve a list of emails with class `ms_outlook_email`
+
+**Development To Do's**
+
+* *None*
+
+# One Email Workflow
+This is a workflow for one email. This allows for a better step-by-step testing
+and understanding. See [automated_flow]
+## Extract Information
+
+**Goal**
+
+Process the contents of the email to extract the relevant information:
+
+  * `course_id` unique identifier with two letters (e.g., PB for Psychology Bachelor) and four numbers
+  * `course_name` human readable name of the course
+  * `course_run` courses can have different versions (i.e., runs). The course run determines which grading form should be used for the submission.
+  * `student_number` unique numeric identifier for each student.
+  * `student_name` name as parsed from the student's email account.
+  * `student_email` email adress provided by the student which is used to communicate the attained grade with students.
+  * `submission_date` date on which the email/submission was received.
+  * `submission_note` students have the option to add a note for the teacher. If such a note was provided it is also extracted.
+  
+Added additional relevant content:
+  * `grade_before_date` compute the date before which the grading should be finished (20 working days from submission).
+  * `grade_status` add a default 'to do' status for use in the grading_overview (see below).
+
+**Requirements**
+
+  * An email from the submission system with class `ms_outlook_email`
+  * `install.packages("qdapRegex")`
+  
+**Execution**
+
+```{r get-submission-info}
+# Example: one email
+submission_info <- get_submission_info(
+  email = submissions[[1]],
+  n_workdays = 20
+)
+```
+
+**Expected Behavior**
+
+A tibble with `r ncol(submission_info)` columns: (`r glue::glue_collapse(colnames(submission_info), sep = ", ", last = ", en ")`). The number of rows depends on
+the number of emails that were processed (i.e., `nrow(submission_info) == length(submissions)`).
+
+**Development To Do's**
+
+1. Additional information to add:
+
+    * `course` the conventional name for the course (e.g., Onderzoekspracticum Experimenteel Onderzoek).
+    * `course_id` the numeric identifier for the course. This can be the same as the course_run if no versions of the course exist in the submission system. 
+
+1. Currently, when computing the `grade_before_date` a shortcut was made to
+compute the date with the number of working days from the `submission_date`. 
+In doing so, we do not account for national holidays such as Christmas or Koningsdag.
+Without accounting for these holidays the `grade_before_date` can at times be a
+couple of days earlier than necessary - but earlier grading does not affect the students negatively.
+
+1. Write tests to account for emails with missing information. Low priority due to the fact that emails are automatically generated with a standardized structure.
+
+
+## Create File Structure
+
+**Goal**
+Each submission is stored according to a standardized file structure: `course` > `course_run` > `student `. For new submissions this file structure does not yet exist and is therefore created before saving the submission attachments.
+
+**Requirements**
+
+  * The parsed contents of a new submission email
+  * Administrative rights allowing the creation of new folders
+  * This file should be nested within an R project that also (will) contain(s) the student submissions.
+  
+**Execution**
+
+```{r, eval = FALSE}
+# Example: one email
+student_folder <-
+  create_folder_structure(submission_info,
+    grading_folder = here::here("Ingeleverde Opdrachten")
+  )
+```
+
+**Expected Behavior**
+
+* Create a nested file structure with the format: `grading_folder` > `course_id` > `course_run` > `student_folder`.
+* Return the path to the student folder for use in subsequent code.
+
+**Development To Do's**
+
+*none*
+
+## Extract and Save Attachments
+
+**Goal**
+
+Extract the attachments from the email and place them in the designated student
+folder.
+
+**Requirements**
+
+  * email with class `ms_outlook_email`
+  * file path to the student's folder
+  
+**Execution**
+
+```{r, eval = FALSE}
+# Invisible to prevent list output of 'NULL' results.
+invisible(
+  download_attachments(
+    email = submissions[[1]],
+    student_folder = student_folder
+  )
+)
+```
+
+**Expected Behavior**
+
+* All attachments are downloaded and stored in the `course` > `course_run` > `student` folder.
+* All attachments are renamed to the short and standardized format.
+
+**Development To Do's**
+
+1. Research how to prevent the list of NULL results from within the `download_attachments` function. Tried invisible `attachment$download()` but that did not change anything.
+
+
+## Add Grading Form
+
+**Goal**
+* Select the correct grading form (dependent on `course` > `course_run`) and add it to the student's folder.
+* Update the file name to include the student's details. Keep it in the same format as the files that were received from the submission system.
+
+**Requirements**
+
+Grading forms differ in their naming conventions. In addition, some courses see a different grading form for each `course_run`, while others keep the same form for years. To prepare this step, a human must once add & update the name of each grading form manually. The `grading_form_folder` must have the following structure:
+
+* A folder for each `course` (e.g., `PB0812`)
+* A grading form for each `course_run` (e.g., `PB0812202144.xlsx`)
+
+Technically, to get started only those grading forms need to be added from courses where new submissions can be expected (1-year after course start).
+
+**Execution**
+
+```{r, eval = FALSE}
+invisible(
+  move_grading_form(
+    grading_form_folder = here::here("Beoordelingsformulieren"),
+    student_folder = student_folder,
+    submission_info = submission_info
+  )
+)
+```
+
+**Expected Behavior**
+
+The required grading form is copied from the `grading_form_folder` to the `student_folder`. The name is changed to align with the naming conventions of the other received documents.
+
+**Development To Do's**
+
+1. Resolve printing `FALSE` after executing the function.
+
+
+## Update Submission Overview
+
+**Goal**
+
+Update the current submission overview with the latest submission. 
+Reorder the overview such that the 'To Do's' are at the top, with the most urgent
+grading (i.e., closest `grade_before_date`) at the top.
+
+**Requirements**
+
+  * The `submission_info`
+  * The name of the `submission_overview`, which if it doesn't yet exist will 
+  be created.
+  
+**Execution**
+
+```{r, eval = FALSE}
+update_submission_overview(
+  submission_info = submission_info,
+  submission_overview = here::here("NakijkOverzicht.xlsx")
+)
+```
+
+**Expected Behavior**
+
+* An excel sheet with the name of `submission_overview` is created which contains
+the most recent and historic `submission_info`.
+
+**Development To Do's**
+
+1. Conditional formatting
+1. Compute a 'grade_by_n_days` or add an excel formula
+1. Complete historic information from read outlook emails.
+1. Prevent warnings from showing
+
+## Mark As Read
+
+```{r}
+# Mark email as processed
+invisible(submissions[[1]]$update("isRead" = TRUE))
+```
+
+
+## Send Confirmation
+
+**Goal**
+
+Send a confirmation email to the student which contains:
+1. A general confirmation that the assignment was received
+1. A general statement of being able to expect the grading at the latest
+before the `grade_before_date`.
+
+**Requirements**
+
+  * The `submission_info` from a single submission as extracted in the step above.
+  * The `email` content to allow a reply to the correct email (for keeping easy inbox structures)
+  * `install.packages("blastula")`
+  
+**Execution**
+
+> *NOTE: upon executing this code an actual email is send!*
+
+```{r, eval = FALSE}
+# Example: one email
+send_confirmation_email(
+  outlook = outlook,
+  submission_info = get_submission_info(email = submissions[[1]]),
+  email = submissions[[1]],
+  teacher_name = "Sally"
+)
+```
+
+**Expected Behavior**
+
+An actual email is send to the student's email adress to confirm receiving a new submission.
+
+**Development To Do's**
+
+1. Optimize the styling of the email such that it includes the OU house style, a logo, the correct font, a formal email signature, and a footer.
+1. Check whether existing footers are added below the created email.
+
+# Multi Email Workflow
+
+**Goal**
+
+Process all the new submissions as part of an `apply` loop.
+
+**Requirements**
+
+  * Authorization
+  * All submissions
+  
+**Execution**
+
+```{r, eval = FALSE}
+
+lapply(
+  X = submissions,
+  FUN = function(email) {
+    # Get information from the submission email
+    submission_info <-
+      get_submission_info(
+        email = email,
+        n_workdays = 20
+      )
+
+    # Create File Structure
+    student_folder <-
+      create_folder_structure(submission_info,
+        grading_folder = "Ingeleverde Opdrachten"
+      )
+
+    # Download Attachments
+    download_attachments(
+      email,
+      student_folder
+    )
+
+    # Add grading forms
+    move_grading_form(student_folder,
+      submission_info,
+      grading_form_folder = "Beoordelingsformulieren"
+    )
+
+    # Update submission overview
+    update_submission_overview(submission_info,
+      submission_overview = here::here("NakijkOverzicht.xlsx")
+    )
+
+    # Mark email as processed
+    invisible(email$update("isRead" = TRUE))
+
+    # Send Confirmation email
+    invisible(send_confirmation_email(outlook,
+      submission_info,
+      email,
+      teacher_name = "Sally"
+    ))
+  }
+)
+```
+
+
+**Expected Behavior**
+
+Process all new submissions according to the steps outlined above. 
+
+> NOTE: actual confirmation emails are send! And the processed emails as indicated as 'read' in the Outlook environment.
+
+**Development To Do's**
+
+1. Showcase as part of an automated workflow
+
+# Manual Submissions
+
+**Goal**
+
+Manually add a new submission to the `submission_overview`. Is useful for cases where students' submit the retakes directly to the teacher or when an assignment consists of multiple parts (e.g., Literatuurstudie).
+
+The available information (e.g., `student_name`) are copied from earlier submission records - which should already exist in the `submission_overview`.
+
+**Requirements**
+
+* This code only works for students that are already included in the submission overview. For completely new students it is best to directly add the information to the Excel.
+
+**Execution**
+
+```{r, eval = FALSE}
+add_manual_submission(student_id = 852416207,
+                      submission_overview = here::here("NakijkOverzicht.xlsx"),
+                      submission_date = "25/07/2022",
+                      n_workdays = 20,
+                      assignment = "T1")
+```
+
+**Expected Behavior**
+
+Add a new line to the `submission_overview`.
+
+**Development To Do's**
+
+* Account for non-existing student information. Perhaps with a command prompt for additional information.
+

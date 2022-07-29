@@ -4,6 +4,8 @@ The Teachers of the Psychology Department of the Open Universiteit (NLD) receive
 
 The purpose of this package is to deal with all manual steps outlined below.
 
+> See the `workflow` vignette for step-by-step instructions and code examples.
+
 ## Current -Manual- Workflow
 
 1. [`get_submission_emails`] Receive an E-mail from `submit@oupsy.nl` which contains:
