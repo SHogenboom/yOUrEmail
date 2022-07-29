@@ -25,7 +25,9 @@ update_submission_overview <- function(submission_info,
         skipEmptyCols = TRUE
       ) %>%
       # Convert to tibble for further processing
-      tibble::as_tibble(.)
+      tibble::as_tibble(.) %>%
+      # RECODE
+      dplyr::mutate("grade" = as.numeric(grade))
   } else {
     # No overview exists, initialize empty tibble
     overview <-
@@ -46,8 +48,8 @@ update_submission_overview <- function(submission_info,
     dplyr::arrange(
       dplyr::desc(status), # statuses: "To Do", "Feedback", "Herkansing", "Done"
       ifelse(status != "To Do",
-        dplyr::desc(grade_before_date), # closest to-do date at the top of the sheet.
-        grade_before_date
+             dplyr::desc(grade_before_date), # closest to-do date at the top of the sheet.
+             grade_before_date
       ) # most recent completed at the top
     )
 
