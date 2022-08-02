@@ -21,11 +21,18 @@ The purpose of this package is to deal with all manual steps outlined below.
 1. [`download_attachments`] Download attachments
     * Save in the created folder
     * Clean-up file names to keep only the standardized structure
-1. [`move_grading_firm`] Add the correct grading form to the folder
+1. [`move_grading_f0rm`] Add the correct grading form to the folder
 1. [`update_submission_overview`] Add a registration for the submission in the 'submission overview'
     * Allows a teacher to keep track of all open submissions & grading deadlines.
-1. [`no function`] Mark email as completed
+1. [`no function`] Mark email as processed
+1. [`plagiarism_scan`] Forward email with correct attachments to the Urkund plagiarism scanner.
+
+---
+
 1. Grade the paper (NOTE: cannot be done automatically!)
+
+---
+
 1. [TO DO] Update the submission overview with the grade information, update status to 'DONE'
 1. [TO DO] Compress all relevant files into a .zip folder
 1. [TO DO] Send 'Beoordelings' Email

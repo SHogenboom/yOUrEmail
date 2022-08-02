@@ -327,6 +327,36 @@ An actual email is send to the student's email adress to confirm receiving a new
 1. Optimize the styling of the email such that it includes the OU house style, a logo, the correct font, a formal email signature, and a footer.
 1. Check whether existing footers are added below the created email.
 
+## Plagiarism Scan
+
+**Goal**
+
+Forward the email, containing only the relevant files, to the plagiarism scan software.
+
+**Requirements**
+
+ * The `email` with class `ms_outlook`
+ * A personal email adres linked to Urkund
+  
+**Execution**
+
+```{r, eval = FALSE}
+forward_plagiarism_scan(email = submissions[[1]],
+                        student_folder = student_folder,
+                        urkund_email = "sally.hogenboom.ounl@analysis.urkund.com")
+
+```
+
+**Expected Behavior**
+
+* An email is send to the `urkund_email` adres which includes the report (i.e., `verslag`) as attachment.
+
+**Development To Do's**
+
+1. Normally you would forward the email to the urkund email adress while removing the irrelevant attachments. However, this is not possible in the `Mircosoft365R` package for two reasons. First, creating a 'forward' email takes a crazy amount of time. Second, each attachments that is removed requires a manual confirmation in an alert pop-up. This prevents it from implementation as part of an automated workflow.
+1. Because of this issue the current workflow does not allow for the plagiarism email to become part of the email 'thread'.
+
+
 # Multi Email Workflow
 
 **Goal**
