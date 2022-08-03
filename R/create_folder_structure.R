@@ -29,7 +29,7 @@ create_folder_structure <- function(submission_info,
   #### COURSE RUN ####
   # Check if a course run is available, for some this is not the case then no
   # ... course run folder should be created.
-  if (!is.na(submission_info$course_run)) {
+  if (submission_info$course_run != "") {
     course_run_folder <- here::here(
       course_folder,
       submission_info$course_run

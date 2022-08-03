@@ -62,7 +62,7 @@ get_submission_info <- function(email,
           dplyr::select(course_name) %>%
           unique() %>%
           dplyr::pull(),
-        "course_run" = "*",
+        "course_run" = character(1),
       )
   } else if (stringr::str_c(course, "B") %in% course_codes$course_run) {
     # Add the 'B' to the course_runs as logged by us
@@ -87,7 +87,7 @@ get_submission_info <- function(email,
     dat %<>%
       tibble::add_column(
         "course_id" = stringr::str_sub(course, 1, 6),
-        "course_name" = "*",
+        "course_name" = character(1),
         "course_run" = course,
       )
   } # END IF
