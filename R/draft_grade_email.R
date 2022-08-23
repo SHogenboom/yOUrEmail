@@ -38,7 +38,7 @@ draft_grade_email <- function(outlook,
   # List all student folders for a course
   all_student_folders <-
     list.dirs(path = here::here(grading_folder,
-                                course_id,
+                                student_info$course_id,
                                 ifelse(student_info$course_run %in% c(NA, "*"),
                                        "",
                                        course_run)),
