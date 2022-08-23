@@ -459,3 +459,44 @@ Add a new line to the `submission_overview`.
 
 * Account for non-existing student information. Perhaps with a command prompt for additional information.
 
+# Draft Grade Email
+
+**Goal**
+
+1. Zip all contents of the students' `grading_folder`
+1. Create a draft-email with:
+    1. To: `student_email`
+    1. CC: examinator of the course - responsible for processing the grade.
+    1. Grade-appropriate-content
+    1. grading_form & relevant files (in `zip`) as attachment.
+
+*NOTE: to change the contents of the email see the code*
+
+**Requirements**
+
+* This code only works for students that are included in the grading overview for a single course.
+
+**Execution**
+
+```{r, eval = FALSE}
+draft_grade_email(
+  outlook,
+  submission_overview = here::here("NakijkOverzicht.xlsx"),
+  grading_folder = here::here("Ingeleverde Opdrachten"),
+  teacher_name = "Sally",
+  student_id = 85199573)
+```
+
+**Expected Behavior**
+
+1. Zip all contents of the students' `grading_folder`
+1. Create a draft-email with:
+    1. To: `student_email`
+    1. CC: examinator of the course - responsible for processing the grade.
+    1. Grade-appropriate-content
+    1. grading_form & relevant files (in `zip`) as attachment.
+
+**Development To Do's**
+
+* Account for students who have taken multiple courses.
+* Clean code
