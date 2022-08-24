@@ -36,7 +36,7 @@ get_submission_info <- function(email,
 
   #### COURSE INFO ####
   # Load course data from package
-  data("course_codes")
+  course_codes <- yOUrEmail::course_codes
 
   # Identify the course:
   course <-
