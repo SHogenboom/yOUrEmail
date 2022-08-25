@@ -41,7 +41,7 @@ draft_grade_email <- function(outlook,
                                 student_info$course_id,
                                 ifelse(student_info$course_run %in% c(NA, "*"),
                                        "",
-                                       course_run)),
+                                       trimws(student_info$course_run))),
               # prevent finding nested folders (e.g., tentamenkans 2)
               recursive = FALSE)
 
