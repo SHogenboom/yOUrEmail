@@ -171,7 +171,10 @@ get_submission_info <- function(email,
   #### MANUAL COLUMN ####
   # Initialize for manual completion
   dat %<>%
-    tibble::add_column("assignment" = "#") %>%
+    tibble::add_column("assignment" =
+                         dplyr::case_when(.$course_id == "PB0712" ~ "A",
+                                          .$course_run == "PB0812212244" ~ "PRE",
+                                          TRUE ~ "T1")) %>%
     tibble::add_column("graded_on" = lubridate::as_date("00/00/0000",
                                                         format = "%d/%m/%Y")) %>%
     tibble::add_column("grade" = numeric(1)) %>%
