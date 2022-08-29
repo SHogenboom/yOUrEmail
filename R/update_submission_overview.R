@@ -27,7 +27,7 @@ update_submission_overview <- function(submission_info,
       # Convert to tibble for further processing
       tibble::as_tibble(.) %>%
       # RECODE
-      dplyr::mutate("grade" = as.numeric(grade))
+      dplyr::mutate("grade" = round(as.numeric(grade), 1))
   } else {
     # No overview exists, initialize empty tibble
     overview <-
