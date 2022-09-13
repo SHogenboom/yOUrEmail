@@ -121,13 +121,13 @@ draft_grade_email <- function(outlook,
   } else if (!is.na(compensation) & as.numeric(student_info$grade) > compensation) {
     # Course is eligible for compensation
     consequence <-
-      glue::glue("**Helaas heb je het deeltentamen daarmee met een onvoldoende afgerond.
+      glue::glue("**Helaas heb je het deeltentamen daarmee met een onvoldoende afgerond**.
                Mogelijk kun je deze onvoldoende nog wel compenseren met je eindtentamen (zie yOUlearn voor meer informatie).")
 
   } else {
     # Course not eligible for compensation OR grade too low
     consequence <-
-      glue::glue("**Helaas heb je het deeltentamen daarmee met een onvoldoende afgerond.
+      glue::glue("**Helaas heb je het deeltentamen daarmee met een onvoldoende afgerond**.
                Dat betekent dat je deze opdracht moet herkansen.")
   }
 
