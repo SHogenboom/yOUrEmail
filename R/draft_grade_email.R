@@ -175,7 +175,7 @@ draft_grade_email <- function(outlook,
   } else {
     # Course not eligible for compensation OR grade too low
     follow_up <-
-      glue::glue("De herkansing kun je straks direct aan mij mailen.
+      glue::glue("De herkansing kun je straks direct aan mij mailen. Graag ontvang ik een versie waarin de wijzigingen zijn bijgehouden.
                Ik hoop dat je met mijn feedback genoeg aanknopingspunten hebt voor verbetering.
                Als je tijdens de herkansing nog vragen hebt over de betekenis van de feedback - schroom dan niet om contact met mij op te nemen!
                Voor inhoudelijke vragen kun je ook altijd terecht op het discussieforum van de cursus en op [https://onderzoeksvragen.ou.nl/](https://onderzoeksvragen.ou.nl/).")
