@@ -118,7 +118,7 @@ draft_grade_email <- function(outlook,
     consequence <-
       glue::glue("**Gefeliciteerd - je bent daarom voor het deeltentamen geslaagd!**")
 
-  } else if (!is.na(compensation) & as.numeric(student_info$grade) > compensation) {
+  } else if (!is.na(compensation) & as.numeric(student_info$grade) >= compensation) {
     # Course is eligible for compensation
     consequence <-
       glue::glue("**Helaas heb je het deeltentamen daarmee met een onvoldoende afgerond**.
@@ -157,7 +157,7 @@ draft_grade_email <- function(outlook,
               Het zou heel fijn zijn als je deze in vult - hiermee kunnen we onze cursussen blijven verbeteren.
               Alvast hartelijk dank voor de tijd en moeite!")
 
-  } else if (!is.na(compensation) & as.numeric(student_info$grade) > compensation) {
+  } else if (!is.na(compensation) & as.numeric(student_info$grade) >= compensation) {
     # Course is eligible for compensation
     follow_up <-
       glue::glue("Wanneer je de cursus voldoende hebt afgerond willen we je vragen om de cursusevaluatie in te vullen.
