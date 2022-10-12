@@ -84,4 +84,6 @@ add_manual_submission <- function(student_id,
     overwrite = TRUE
   )
 
+  print(glue::glue("Uiterlijk Nakijken Voor: {submission$submission_date + lubridate::wday(n_workdays)}"))
+
 }
