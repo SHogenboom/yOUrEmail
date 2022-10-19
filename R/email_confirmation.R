@@ -10,12 +10,14 @@
 #' @param email an email environment (ms_outlook_email) with the contents of a
 #' single email sent by `submit@oupsy.nl`
 #' @param teacher_name the name of the teacher doing the grading
+#' @param n_working_days number of working days before grading deadline
 #'
 
 send_confirmation_email <- function(outlook,
                                     submission_info,
                                     email,
-                                    teacher_name) {
+                                    teacher_name,
+                                    n_working_days) {
 
   # Email is created with method chaining to add all relevant parts of the email
   confirmation_email <-
@@ -34,7 +36,7 @@ send_confirmation_email <- function(outlook,
 
             Hierbij bevestig ik de ontvangst van je opdracht voor {submission_info$course_id}.
 
-            Rekening houdend met de maximale nakijktermijn van 21 werkdagen
+            Rekening houdend met de maximale nakijktermijn van {n_working_days} werkdagen
             ontvang je uiterlijk **{format.Date(submission_info$grade_before_date,
             format = '%d %B %Y')}** feedback en/of je cijfer.
 
