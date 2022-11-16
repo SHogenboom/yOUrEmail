@@ -158,7 +158,7 @@ get_submission_info <- function(email,
 
   dat %<>%
     tibble::add_column("student_submission_note" = ifelse(is.na(submission_note),
-      "no student note",
+      "",
       submission_note
     ))
 
