@@ -104,7 +104,7 @@ draft_grade_email <- function(outlook,
           ")
 
   # GRADE
-  # Je hebt het deeltentamen van PB012 met een 6.5 afgerond.
+  # Bijv. "Je hebt het deeltentamen van PB012 met een 6.5 afgerond."
   grade_info <-
     glue::glue("
              Je hebt een **{student_info$grade}** voor het deeltentamen van {student_info$course_name} ",
@@ -113,7 +113,7 @@ draft_grade_email <- function(outlook,
              student_info$course_run)})")
 
   # Pass/Fail/Compensation
-  if (as.numeric(student_info$grade) > pass) {
+  if (as.numeric(student_info$grade) >= pass) {
     # Course was passed
     consequence <-
       glue::glue("**Gefeliciteerd - je bent daarom voor het deeltentamen geslaagd!**")
@@ -140,7 +140,7 @@ draft_grade_email <- function(outlook,
              Wanneer kritiekpunten buiten de rubric lijken te vallen kun je ze interpreteren als een extra service/uitleg.
              Er zullen dan ook geen punten voor afgetrokken zijn - maar ik hoop wel dat ze nuttig zullen zijn voor toekomstige verslagen / onderzoekspractica!
 
-             *Dit is een voorlopige beoordeling*; ik cc daarom de examinator ({examinator_name}) zodat de definitieve beoordeling opgesteld kan worden.
+             *Dit is een voorlopige beoordeling*; ik cc daarom de examinator{ifelse(grepl(x = examinator_name, pattern = '&'), 'en', '')} ({examinator_name}) zodat de definitieve beoordeling opgesteld kan worden.
              Hoewel onze beoordelingen in de regel overeenkomen is er een kleine kans dat je definitieve beoordeling afwijkt.
              In dat geval geldt de beoordeling van de examinator. Als dit voor jou speelt, informeert de examinator je daar zo snel mogelijk over.
              Als je geen bericht ontvangt van de examinator kun je ervan uitgaan dat de definitieve beoordeling overeenkomt met mijn voorlopige beoordeling.
@@ -150,7 +150,7 @@ draft_grade_email <- function(outlook,
              ")
 
   # RETAKE OR EVALUATE
-  if (as.numeric(student_info$grade) > pass) {
+  if (as.numeric(student_info$grade) >= pass) {
     # Course was passed
     follow_up <-
       glue::glue("In de cursusstructuur in yOUlearn staat helemaal aan het eind een cursusevaluatieformulier klaar.
@@ -207,8 +207,6 @@ draft_grade_email <- function(outlook,
     # Add subject
     set_subject(glue::glue("Beoordeling {course_id}: {student_info$student_name} ",
                            "({student_info$student_number})"))$
-    add_attachment(here::here(student_folder,
-                              zip_name))$
     set_body(
       blastula::compose_email(
         body = blastula::md(
@@ -224,6 +222,27 @@ draft_grade_email <- function(outlook,
         )
       )
     )
+
+  # ADD ATTACHEMENTS
+  # If OCO - add grade form seperately
+  if(course_id == "PB0812") {
+    grade_email <-
+      grade_email$
+      # Add zipped files
+      add_attachment(here::here(student_folder,
+                                zip_name))$
+      # Add grade form separately
+      add_attachment(list.files(here::here(student_folder),
+                                pattern = "eoordeling",
+                                full.names = TRUE))
+  } else {
+    grade_email <-
+      grade_email$
+      # Add zipped files
+      add_attachment(here::here(student_folder,
+                                zip_name))
+  }
+
 
   warning("The email has been created as a DRAFT.
           Please go to your email, confirm all information is correct, and press send!")
