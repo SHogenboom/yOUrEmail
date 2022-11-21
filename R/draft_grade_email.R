@@ -31,6 +31,8 @@ draft_grade_email <- function(outlook,
     tibble::as_tibble(.) %>%
     # Find student's information
     dplyr::filter(student_number == student_id) %>%
+    # Keep only completed
+    dplyr::filter(status == "Done") %>%
     # Keep last entry
     dplyr::slice(which.max(submission_date))
 
@@ -54,7 +56,7 @@ draft_grade_email <- function(outlook,
 
   if (course_id == "PB0812") {
     # Cross-Sectioneel
-    examinator_name <- "Gjalt-Jorn Peters & Bram Duif"
+    examinator_name <- "Bram Duyx & Peter Verboon"
     examinator_email <- "oco-vragen@ou.nl"
     pass <- 5.5
     compensation <- NA
