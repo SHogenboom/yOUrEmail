@@ -226,8 +226,7 @@ draft_grade_email <- function(outlook,
     )
 
   # ADD ATTACHEMENTS
-  # If OCO - add grade form seperately
-  if(course_id == "PB0812") {
+  # Everything combined in a zip & grade form separately for easy use by examinatoren
     grade_email <-
       grade_email$
       # Add zipped files
@@ -235,15 +234,9 @@ draft_grade_email <- function(outlook,
                                 zip_name))$
       # Add grade form separately
       add_attachment(list.files(here::here(student_folder),
-                                pattern = "eoordeling",
+                                pattern = "[Bb]eoordeling",
                                 full.names = TRUE))
-  } else {
-    grade_email <-
-      grade_email$
-      # Add zipped files
-      add_attachment(here::here(student_folder,
-                                zip_name))
-  }
+
 
 
   warning("The email has been created as a DRAFT.
