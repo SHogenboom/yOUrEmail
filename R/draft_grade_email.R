@@ -227,15 +227,15 @@ draft_grade_email <- function(outlook,
 
   # ADD ATTACHEMENTS
   # Everything combined in a zip & grade form separately for easy use by examinatoren
-    grade_email <-
-      grade_email$
-      # Add zipped files
-      add_attachment(here::here(student_folder,
-                                zip_name))$
-      # Add grade form separately
-      add_attachment(list.files(here::here(student_folder),
-                                pattern = "[Bb]eoordeling",
-                                full.names = TRUE))
+  grade_email <-
+    grade_email$
+    # Add zipped files
+    add_attachment(here::here(student_folder,
+                              zip_name))$
+    # Add grade form separately
+    add_attachment(list.files(here::here(student_folder),
+                              pattern = "[Bb]eoordeling.*\\.xlsx",
+                              full.names = TRUE))
 
 
 
