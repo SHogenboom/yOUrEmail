@@ -112,7 +112,9 @@ draft_grade_email <- function(outlook,
              Je hebt een **{student_info$grade}** voor het deeltentamen van {student_info$course_name} ",
              "({ifelse(student_info$course_run %in% c(NA, '*'),
              student_info$course_id,
-             student_info$course_run)})")
+             student_info$course_run)})
+
+             ")
 
   # Pass/Fail/Compensation
   if (as.numeric(student_info$grade) >= pass) {
@@ -229,16 +231,47 @@ draft_grade_email <- function(outlook,
   # Everything combined in a zip & grade form separately for easy use by examinatoren
   grade_email <-
     grade_email$
-    # Add zipped files
-    add_attachment(here::here(student_folder,
-                              zip_name))$
     # Add grade form separately
     add_attachment(list.files(here::here(student_folder),
                               pattern = "[Bb]eoordeling.*\\.xlsx",
-                              full.names = TRUE))
+                              full.names = TRUE))$
+    # Add zipped files
+    add_attachment(here::here(student_folder,
+                              zip_name))
 
+  #### UPDATE SUBMISSION OVERVIEW ####
+  overview <-
+    # Load submission overview
+    # load xlsx
+    # NOTE: only works when file is closed!
+    openxlsx::read.xlsx(
+      xlsxFile = here::here(submission_overview),
+      colNames = TRUE, # import the header row as column names
+      detectDates = TRUE, # import dates
+      skipEmptyRows = TRUE, # do not import empty cells
+      skipEmptyCols = TRUE
+    ) %>%
+    # RESTRUCTURE
+    dplyr::arrange(
+      dplyr::desc(status), # statuses: "To Do", "Feedback", "Herkansing", "Done"
+      ifelse(status != "To Do",
+             dplyr::desc(grade_before_date), # closest to-do date at the top of the sheet.
+             grade_before_date
+      ) # most recent completed at the top
+    )
+
+  #### UPDATE SUBMISSION OVERVIEW XLSX ####
+  # Initialize xlsx with correct styling
+  xlsx_overview <- initalize_submission_xlsx(overview)
+
+  openxlsx::saveWorkbook(
+    wb = xlsx_overview,
+    file = here::here(submission_overview),
+    overwrite = TRUE
+  )
 
 
   warning("The email has been created as a DRAFT.
           Please go to your email, confirm all information is correct, and press send!")
 }
+
