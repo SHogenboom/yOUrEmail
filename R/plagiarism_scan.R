@@ -21,8 +21,9 @@ forward_plagiarism_scan <- function(email,
     # Add 'verslag'(ie., report) as attachment
     add_attachment(object = here::here(student_folder,
                                        # Find which filename in the student folder includes 'verslag'
+                                       # Or Opdracht A for PB0712 (Literatuurstudie)
                                        list.files(path = student_folder,
-                                                  pattern = "verslag")))
+                                                  pattern = "verslag| A ")))
 
 
   # Send the actual email
