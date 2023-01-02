@@ -33,9 +33,8 @@ The purpose of this package is to deal with all manual steps outlined below.
 
 ---
 
-1. [TO DO] Update the submission overview with the grade information, update status to 'DONE'
-1. [TO DO] Compress all relevant files into a .zip folder
-1. [TO DO] Send 'Beoordelings' Email
+1. Update the submission overview with the grade information, update status to 'DONE'
+1. [`draft_grade_email`] Send 'Beoordelings' Email
     * CC the examinator of the course
     * Add personalized grade information and pass/fail judgement
     * Include information on feedback, herkansingen, course evaluations
