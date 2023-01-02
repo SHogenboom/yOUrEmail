@@ -5,6 +5,8 @@
 #' * The assignment has been added to the `grading_overview`
 #' * The student can expect a grade before the `grade_before_date`
 #'
+#' STORED IN DRAFTS
+#'
 #' @param outlook no default. Authenticate & retrieve your outlook environment
 #' @param submission_info information from the email of a single submission
 #' @param email an email environment (ms_outlook_email) with the contents of a
@@ -13,7 +15,7 @@
 #' @param n_working_days number of working days before grading deadline
 #'
 
-send_confirmation_email <- function(outlook,
+draft_confirmation_email <- function(outlook,
                                     submission_info,
                                     email,
                                     teacher_name,
@@ -49,6 +51,6 @@ send_confirmation_email <- function(outlook,
       )
     )
 
-  # Send the actual email
-  confirmation_email$send()
+  warning("The email has been created as a DRAFT.
+          Please go to your email, confirm all information is correct, and press send!")
 }
