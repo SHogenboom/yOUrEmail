@@ -64,7 +64,7 @@ draft_feedback_email <- function(outlook,
           glue::glue(
             "Beste {stringr::word(student_info$student_name)},
 
-              Hieronder vind je de algemene feedback. Specifieke voorbeelden en
+              Hierbij ontvang je feedback op je opdracht. Specifieke voorbeelden en
               opmerkingen kun je vinden in het document (*zie bijlage*).
               Het is niet haalbaar om herhaalde patronen (e.g., APA fouten, taalfouten)
               keer op keer in de tekst aan te geven. Zie de specifieke feedback
@@ -91,7 +91,8 @@ draft_feedback_email <- function(outlook,
   student_files <-
     file.info(
       list.files(here::here(student_folder),
-                 full.names = TRUE))
+                 full.names = TRUE,
+                 recursive = TRUE))
 
   # Select most recent file
   recent_student_file <-
