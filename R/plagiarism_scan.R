@@ -23,7 +23,7 @@ forward_plagiarism_scan <- function(email,
                                        # Find which filename in the student folder includes 'verslag'
                                        # Or Opdracht A for PB0712 (Literatuurstudie)
                                        list.files(path = student_folder,
-                                                  pattern = "verslag| A ")))
+                                                  pattern = "verslag| A |.docx")))
 
 
   # Send the actual email
