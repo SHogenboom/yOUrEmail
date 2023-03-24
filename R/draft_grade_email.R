@@ -72,8 +72,13 @@ draft_grade_email <- function(outlook,
     examinator_email <- "ron.pat-el@ou.nl"
     pass <- 5.5
     compensation <- 5
+  } else if (course_id == "PB1612") {
+    # Cross-Sectioneel
+    examinator_name <- "Julia Fischmann & Gjalt-Jorn Peters"
+    examinator_email <- "oko-vragen@ou.nl"
+    pass <- 5.5
+    compensation <- NA
   }
-
 
   #### ZIP ATTACHMENTS ####
   # NOTE: requires temporarily changing of working directory due to how .zip is
