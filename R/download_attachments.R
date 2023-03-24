@@ -11,11 +11,14 @@
 #' single email sent by `submit@oupsy.nl`
 #' @param student_folder a file path to the designated student folder where the
 #' attachments should be saved.
+#' @param clean_file_names TRUE/FALSE; whether or not the filenames should be
+#' cleaned. Due to differences in file convententions not all file names should be cleaned.
 #'
 #' @return nothing
 #'
 download_attachments <- function(email,
-                                 student_folder) {
+                                 student_folder,
+                                 clean_file_names = TRUE) {
 
   # List the available attachments
   all_attachments <- email$list_attachments()
@@ -31,14 +34,16 @@ download_attachments <- function(email,
       # ... as it will not follow a standardized format.
       # In addition, sometimes this creates such long file names that they
       # ... cannot be downloaded as is.
-      new_attachment_name <-
-        stringr::str_remove(
-          string = attachment$properties$name, # original file name
-          pattern = " \\[(.*?)\\]"
-        )
+      if (clean_file_names) {
+        new_attachment_name <-
+          stringr::str_remove(
+            string = attachment$properties$name, # original file name
+            pattern = " \\[(.*?)\\]"
+          )
 
-      # Update the file's name
-      attachment$properties$name <- new_attachment_name
+        # Update the file's name
+        attachment$properties$name <- new_attachment_name
+      }
 
       # Download the attachment with the updated name
       # NOTE: somehow this function does not allow storing in a destination
