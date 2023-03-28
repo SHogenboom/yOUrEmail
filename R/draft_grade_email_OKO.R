@@ -98,9 +98,9 @@ draft_grade_email_OKO <- function(outlook,
   # Multiple assignments, split the grades for each assignment
   grades <- strsplit(student_info$grade, split = "|", fixed = TRUE)[[1]]
   grade_consequences <-
-    c(ifelse(grades[1] >= pass, 'Gehaald', 'Herkansing'),
+    c(ifelse(as.numeric(grades[1]) >= pass, 'Gehaald', 'Herkansing'),
       ifelse(grades[2] %in% c('Voldoende', "voldoende"), 'Gehaald', 'Herkansing'),
-      ifelse(grades[3] >= pass, 'Gehaald', 'Herkansing'))
+      ifelse(as.numeric(grades[3]) >= pass, 'Gehaald', 'Herkansing'))
 
   grade_info <-
     glue::glue("
@@ -120,7 +120,7 @@ draft_grade_email_OKO <- function(outlook,
   if (all(grade_consequences == "Gehaald")) {
     # Course was passed
     consequence <-
-      glue::glue("**Gefeliciteerd - je bent voor alle deelopdrachtend geslaagd!**")
+      glue::glue("**Gefeliciteerd - je bent voor alle deelopdrachten geslaagd!**")
 
   } else {
     # One of the deelopdrachten did not pass
