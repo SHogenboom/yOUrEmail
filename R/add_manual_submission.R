@@ -33,7 +33,6 @@ add_manual_submission <- function(student_id,
     # Convert to tibble for further processing
     tibble::as_tibble(.)
 
-
   # FIND INFORMATION
   submission <-
     overview %>%
@@ -50,13 +49,15 @@ add_manual_submission <- function(student_id,
                        format = "%d/%m/%Y")
   # Recompute grade_before_date
   submission$grade_before_date <-
-    submission$submission_date + lubridate::wday(n_workdays)
+    bizdays::offset(submission$submission_date,
+                    n = n_workdays,
+                    cal = bizdays::create.calendar(name = "work_calender",
+                                                   weekdays = c("saturday", "sunday")))
   # Update
   submission$assignment <- assignment
   # Reset to empty date
-  submission$graded_on <-
-    lubridate::as_date("00/00/0000",
-                       format = "%d/%m/%Y")
+  submission$graded_on <- NA
+
   # Reset grade
   submission$grade <- NA
 
@@ -84,6 +85,6 @@ add_manual_submission <- function(student_id,
     overwrite = TRUE
   )
 
-  print(glue::glue("Uiterlijk Nakijken Voor: {submission$submission_date + lubridate::wday(n_workdays)}"))
+  print(glue::glue("Uiterlijk Nakijken Voor: {submission$grade_before_date}"))
 
 }

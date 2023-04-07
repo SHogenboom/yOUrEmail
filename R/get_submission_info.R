@@ -166,7 +166,12 @@ get_submission_info <- function(email,
   # Manually compute the date before which the submission should be graded.
   # Defaults to 20 working days from the submission date.
   dat %<>%
-    tibble::add_column("grade_before_date" = .$submission_date + lubridate::wday(n_workdays))
+    tibble::add_column("grade_before_date" =
+                         bizdays::offset(.$submission_date,
+                                         n = n_workdays,
+                                         cal = bizdays::create.calendar(name = "work_calender",
+                                                                        weekdays = c("saturday", "sunday"))))
+
 
   #### MANUAL COLUMN ####
   # Initialize for manual completion
@@ -175,8 +180,7 @@ get_submission_info <- function(email,
                          dplyr::case_when(.$course_id == "PB0712" ~ "A",
                                           .$course_run == "PB0812212244" ~ "PRE",
                                           TRUE ~ "T1")) %>%
-    tibble::add_column("graded_on" = lubridate::as_date("01/01/0000",
-                                                        format = "%d/%m/%Y")) %>%
+    tibble::add_column("graded_on" = NA) %>%
     tibble::add_column("grade" = numeric(1)) %>%
     tibble::add_column("grading_notes" = character(1))
 
