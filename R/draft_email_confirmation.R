@@ -51,6 +51,12 @@ draft_confirmation_email <- function(outlook,
       )
     )
 
-  warning("The email has been created as a DRAFT.
-          Please go to your email, confirm all information is correct, and press send!")
+  message(
+  glue::glue("The email has been created as a DRAFT.",
+             "The student provided the following note: \n",
+             "{submission_info$student_submission_note}",
+             "\n\n",
+             "Please go to your email, confirm all information is correct, and press send!"
+             ))
+
 }
