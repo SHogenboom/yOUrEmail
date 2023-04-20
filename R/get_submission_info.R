@@ -181,7 +181,7 @@ get_submission_info <- function(email,
                                           .$course_run == "PB0812212244" ~ "PRE",
                                           TRUE ~ "T1")) %>%
     tibble::add_column("graded_on" = NA) %>%
-    tibble::add_column("grade" = numeric(1)) %>%
+    tibble::add_column("grade" = character(1)) %>%
     tibble::add_column("grading_notes" = character(1))
 
   return(dat)
