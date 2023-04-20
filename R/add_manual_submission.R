@@ -60,6 +60,8 @@ add_manual_submission <- function(student_id,
 
   # Reset grade
   submission$grade <- NA
+  # Reset note
+  submission$student_submission_note <- character(1)
 
   # ADD TO OVERVIEW
   overview <-
