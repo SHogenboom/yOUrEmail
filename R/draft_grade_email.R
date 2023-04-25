@@ -91,6 +91,13 @@ draft_grade_email <- function(outlook,
     "{course_id} beoordeling {student_info$student_name} ",
     "({student_info$student_number}).zip")
 
+  # Remove zip if it already exists.
+  if (file.exists(here::here(student_folder,
+                            zip_name))) {
+    file.remove(here::here(student_folder,
+                           zip_name))
+  }
+
   # Zip the files
   utils::zip(
     # Name of the output zip
