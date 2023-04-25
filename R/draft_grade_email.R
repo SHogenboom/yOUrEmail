@@ -56,7 +56,7 @@ draft_grade_email <- function(outlook,
 
   if (course_id == "PB0812") {
     # Cross-Sectioneel
-    examinator_name <- "Bram Duyx & Peter Verboon"
+    examinator_name <- "Mira Duif & Peter Verboon"
     examinator_email <- "oco-vragen@ou.nl"
     pass <- 5.5
     compensation <- NA
