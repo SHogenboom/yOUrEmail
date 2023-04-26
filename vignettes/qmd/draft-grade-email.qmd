@@ -1,0 +1,107 @@
+---
+title: "Drafting Grade Emails"
+author: "Sally A.M. Hogenboom"
+date: "`r Sys.Date()`"
+format: pdf
+editor_options: 
+  chunk_output_type: console
+---
+
+**Setup**
+
+```{r setup, message=FALSE}
+library(yOUrEmail)
+library(tidyverse)
+library(magrittr)
+
+# Authenticate & get Outlook Environment
+outlook <- Microsoft365R::get_business_outlook()
+```
+
+# OEO; LS; OCO
+
+**Goal**
+
+Create a grade email with 'adaptive' content for all courses with a single end grade (OEO; LS; OCO).
+
+1. Zip all contents of the students' `grading_folder`
+1. Create a draft-email with:
+    1. To: `student_email`
+    1. CC: examinator of the course - responsible for processing the grade.
+    1. Grade-appropriate-content
+    1. grading_form & relevant files (in `zip`) as attachment.
+
+*NOTE: to change the contents of the email see the code*
+
+**Requirements**
+
+* This code only works for the most recent submission by a student marked as 'DONE' (`status`) with a grade.
+
+**Execution**
+
+```{r, eval = FALSE}
+draft_grade_email(
+  outlook,
+  submission_overview = here::here("NakijkOverzicht.xlsx"),
+  grading_folder = here::here("Ingeleverde Opdrachten"),
+  teacher_name = "Sally",
+  student_id = 85199573)
+```
+
+**Expected Behavior**
+
+1. Zip all contents of the students' `grading_folder`
+1. Create a draft-email with:
+    1. To: `student_email`
+    1. CC: examinator of the course - responsible for processing the grade.
+    1. Grade-appropriate-content
+    1. grading_form & relevant files (in `zip`) as attachment.
+
+**Development To Do's**
+
+* *None*
+
+# OKO
+
+**Goal**
+
+Create a grade email with 'adaptive' content for all courses with multiple grades (OKO).
+
+1. Zip all contents of the students' `grading_folder`
+1. Create a draft-email with:
+    1. To: `student_email`
+    1. CC: examinator of the course - responsible for processing the grade.
+    1. Grade-appropriate-content
+    1. grading_form & relevant files (in `zip`) as attachment.
+
+*NOTE: to change the contents of the email see the code*
+
+**Requirements**
+
+* This code only works for the most recent submission by a student.
+* The grade should be pipe separated (e.g., "5.5|Voldoende|6.5")
+
+**Execution**
+
+```{r, eval = FALSE}
+yOUrEmail::draft_grade_email_OKO(
+  outlook,
+  submission_overview = here::here("NakijkOverzicht.xlsx"),
+  grading_folder = here::here("Ingeleverde Opdrachten"),
+  teacher_name = "Sally",
+  student_id = 852464750
+)
+```
+
+**Expected Behavior**
+
+1. Zip all contents of the students' `grading_folder`
+1. Create a draft-email with:
+    1. To: `student_email`
+    1. CC: examinator of the course - responsible for processing the grade.
+    1. Grade-appropriate-content
+    1. grading_form & relevant files (in `zip`) as attachment.
+
+**Development To Do's**
+
+* *None*

@@ -1,0 +1,121 @@
+---
+title: "Workflow for Automated Handling of Multiple Submission Emails"
+author: "Sally A.M. Hogenboom"
+date: "`r Sys.Date()`"
+format: pdf
+editor_options: 
+  chunk_output_type: console
+---
+
+**Setup**
+
+```{r setup, message=FALSE}
+library(yOUrEmail)
+library(tidyverse)
+library(magrittr)
+
+# Authenticate & get Outlook Environment
+outlook <- Microsoft365R::get_business_outlook()
+```
+
+# Retrieve All Submissions
+
+**Goal**
+
+Retrieve all new (i.e., unread) emails from the submission system.
+
+**Requirements**
+  
+**Execution**
+
+* `outlook`: pass down the outlook environment retrieved during successful authentication
+* `submissions_folder`: specify the folder where the submissions are received. 
+Some teachers have automated rules set-up which move the submissions to a different *outlook*
+folder (e.g., 'Nakijken'). If this is the case, specify the exact name of that folder.
+* `submissions_email`: built-in option to allow for upcoming changes to the submissions system which will send the submissions from a different emailadres. Defaults to `submit@oupsy.nl`
+* `email_status`: unread/read/all; only parse emails which meet the specified `status`.
+
+```{r get-submissions}
+submissions <- get_submissions(outlook,
+  submissions_folder = "Nakijken",
+  submissions_email = "submit@oupsy.nl",
+  email_status = "unread"
+)
+```
+
+**Expected Behavior**
+
+* Retrieve a list of emails with class `ms_outlook_email`
+
+**Development To Do's**
+
+* *None*
+
+# Multi Email Workflow
+
+**Goal**
+
+Process all the new submissions as part of an `apply` loop. For explanations of the individual processing steps see the vignette `single-email`.
+
+**Requirements**
+
+  * Authorization (see above)
+  * All submissions (see above)
+  
+**Execution**
+
+```{r, eval = FALSE}
+
+lapply(
+  X = submissions,
+  FUN = function(email) {
+    # Get information from the submission email
+    submission_info <-
+      get_submission_info(
+        email = email,
+        n_workdays = 20
+      )
+
+    # Create File Structure
+    student_folder <-
+      create_folder_structure(submission_info,
+        grading_folder = "Ingeleverde Opdrachten"
+      )
+
+    # Download Attachments
+    download_attachments(
+      email,
+      student_folder
+    )
+
+    # Add grading forms
+    move_grading_form(student_folder,
+      submission_info,
+      grading_form_folder = "Beoordelingsformulieren"
+    )
+
+    # Update submission overview
+    update_submission_overview(submission_info,
+      submission_overview = here::here("NakijkOverzicht.xlsx")
+    )
+
+    # Mark email as processed
+    invisible(email$update("isRead" = TRUE))
+
+    # Send Confirmation email
+    invisible(send_confirmation_email(outlook,
+      submission_info,
+      email,
+      teacher_name = "Sally"
+    ))
+  }
+)
+```
+
+**Expected Behavior**
+
+Process all new submissions according to the steps outlined in the `single-email` vignette. 
+
+**Development To Do's**
+
+1. Showcase as part of an automated workflow (e.g., execution once a day).

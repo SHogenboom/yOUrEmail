@@ -1,0 +1,47 @@
+---
+title: "Manual Submissions (Retakes)"
+author: "Sally A.M. Hogenboom"
+date: "`r Sys.Date()`"
+format: pdf
+editor_options: 
+  chunk_output_type: console
+---
+
+**Setup**
+
+```{r setup, message=FALSE}
+library(yOUrEmail)
+library(tidyverse)
+library(magrittr)
+
+# Authenticate & get Outlook Environment
+outlook <- Microsoft365R::get_business_outlook()
+```
+
+**Goal**
+
+Manually add a new submission to the `submission_overview`. Is useful for cases where students' submit the retakes directly to the teacher or when an assignment consists of multiple parts (e.g., Literatuurstudie).
+
+The available information (e.g., `student_name`) are copied from earlier submission records - which should already exist in the `submission_overview`.
+
+**Requirements**
+
+* This code only works for students that are already included in the submission overview. For completely new students it is best to directly add the information to the Excel.
+
+**Execution**
+
+```{r, eval = FALSE}
+add_manual_submission(student_id = 852416207,
+                      submission_overview = here::here("NakijkOverzicht.xlsx"),
+                      submission_date = "25/07/2022",
+                      n_workdays = 15,
+                      assignment = "T1")
+```
+
+**Expected Behavior**
+
+Add a new line to the `submission_overview`.
+
+**Development To Do's**
+
+* Account for non-existing student information. Perhaps with a command prompt for additional information.

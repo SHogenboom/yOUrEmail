@@ -1,0 +1,48 @@
+---
+title: "Authentication"
+author: "Sally A.M. Hogenboom"
+date: "`r Sys.Date()`"
+format: pdf
+editor_options: 
+  chunk_output_type: console
+---
+**Setup**
+
+```{r setup, message=FALSE}
+library(yOUrEmail)
+library(tidyverse)
+library(magrittr)
+
+# Authenticate & get Outlook Environment
+outlook <- Microsoft365R::get_business_outlook()
+```
+
+**Goal**
+
+Create a successful connection to the outlook environment. 
+This connection allows us to read/write/send emails from an (automated) R script.
+
+**Requirements**
+
+  * Login credentials for our business outlook
+  * An active browser (e.g., Microsoft Edge)
+  * A Windows Computer
+  * `install.packages("httpuv")` 
+  
+**Execution**
+
+```{r authentication}
+# Authenticate & get Outlook Environment
+outlook <- Microsoft365R::get_business_outlook()
+```
+
+**Expected Behavior**
+
+Upon first login this code prompts a manual login process via the browser. Working with Windows/Microsoft Edge allows for our login credentials to be saved (automatically). Therefore, upon subsequent authentication the credentials will be updated (see message output in code above).
+
+**Development To Do's**
+
+1. It is highly plausible that this workflow only works with a `Windows` x `Microsoft Edge` combination. Workarounds for unattended scripts (i.e., no manual steps) are available via a [Microsoft365R vignette](https://cran.r-project.org/web/packages/Microsoft365R/vignettes/scripted.html).
+1. I have not been able to implement a test for an unsuccessful authentication process (see `test-authentication.R`).
+1. Workflow also works for `Mac` x `DuckDuckGo` combination.
+

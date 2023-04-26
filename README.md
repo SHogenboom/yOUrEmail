@@ -1,12 +1,14 @@
 # yOUrEmail
 
-The Teachers of the Psychology Department of the Open Universiteit (NLD) receive the to-be-graded papers via their work e-mail.
+The teachers of the Theory, Methods, and Statistics Department of the Open Universiteit (NLD) receive the to-be-graded papers via their work e-mail. The graded papers are then sent for inspection and forwarded to the exam committee.
 
-The purpose of this package is to deal with all manual steps outlined below.
+The purpose of this package is to replace as many of the manual steps outlined below. 
 
-> See the `workflow` vignette for step-by-step instructions and code examples.
+deal with all manual steps outlined below.
 
-## Current -Manual- Workflow
+> See the `workflow` vignettea for step-by-step instructions and code examples.
+
+## Current Workflow
 
 1. [`get_submission_emails`] Receive an E-mail from `submit@oupsy.nl` which contains:
     * The submission date; determines the deadline for grading (+20 working days)
@@ -21,7 +23,7 @@ The purpose of this package is to deal with all manual steps outlined below.
 1. [`download_attachments`] Download attachments
     * Save in the created folder
     * Clean-up file names to keep only the standardized structure
-1. [`move_grading_f0rm`] Add the correct grading form to the folder
+1. [`move_grading_form`] Add the correct grading form to the folder
 1. [`update_submission_overview`] Add a registration for the submission in the 'submission overview'
     * Allows a teacher to keep track of all open submissions & grading deadlines.
 1. [`no function`] Mark email as processed

@@ -1,0 +1,50 @@
+---
+title: "Drafting Feedback Emails"
+author: "Sally A.M. Hogenboom"
+date: "`r Sys.Date()`"
+format: pdf
+editor_options: 
+  chunk_output_type: console
+---
+
+**Setup**
+
+```{r setup, message=FALSE}
+library(yOUrEmail)
+library(tidyverse)
+library(magrittr)
+
+# Authenticate & get Outlook Environment
+outlook <- Microsoft365R::get_business_outlook()
+```
+
+**Goal**
+
+Draft a standardized email which details how to deal with feedback, where to submit the final assignment, and includes the feedback document as attachment.
+
+**Requirements**
+
+* Access to the files
+
+**Execution**
+
+```{r, eval = FALSE}
+yOUrEmail::draft_feedback_email(
+  outlook,
+  submission_overview = here::here("NakijkOverzicht.xlsx"),
+  grading_folder = here::here("Ingeleverde Opdrachten"),
+  teacher_name = "Sally",
+  student_id = 852258921
+)
+```
+
+**Expected Behavior**
+
+1. Create a draft-email with:
+    1. To: `student_email`
+    1. General 'how to process the feedback' statement
+    1. Feedback document as attachment.
+
+**Development To Do's**
+
+* *None*
