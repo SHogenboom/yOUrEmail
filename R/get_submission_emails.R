@@ -13,36 +13,36 @@
 #' in which the submissions emails are stored. If you have an automatic rule setup
 #' which moves the submissions to a different folder (e.g., "Nakijken") specify the name
 #' of that folder.
-#' @param submissions_email default: "submit@oupsy.nl". Specify the email address from
-#' which the submissions are received.
-#' @param email_status default: unread. Options include: "unread" (only new submissions),
-#' "read" (only processed submissions), "all" (all submissions)
-# .'
 #' @return a list of emails which all have the class "ms_outlook_email".
 #'
 get_submissions <- function(outlook,
-                            submissions_folder = "Inbox",
-                            submissions_email = "submit@oupsy.nl",
-                            email_status = "unread") {
+                            submissions_folder = "Inbox") {
 
   # Get submissions
   submissions_from_system <-
     # Access the outlook environment
     outlook$
-      # Get the submissions folder's content (defaults to inbox)
-      get_folder(folder_name = submissions_folder)$
-      # Retrieve only the emails from the submission system
-      list_emails(
-      search =
-        glue::glue(
-          "from:{submissions_email}",
-          dplyr::case_when(
-            email_status == "all" ~ "",
-            email_status == "read" ~ " AND isread:yes",
-            email_status == "unread" ~ " AND isread:no"
-          )
-        )
-    )
+    # Get the submissions folder's content (defaults to inbox)
+    get_folder(folder_name = submissions_folder)$
+    # Retrieve all emails in the folder
+    list_emails()
 
-  return(submissions_from_system)
+  # Extract only the emails which are unread
+  submissions <-
+    lapply(X = submissions_from_system,
+           FUN = function(em) {
+             # Keep only new emails
+             if (!em$properties$isRead) {
+               return(em)
+             } else {
+               # Return a null object which is removed later
+               return()
+             }
+           })
+
+  # remove empty elements
+  new_submissions <- purrr::compact(submissions)
+
+  # Return only the new emails
+  return(new_submissions)
 }
