@@ -60,14 +60,16 @@ process_new_assessments <- function(assessment_emails,
         ),
         list = TRUE
       )
-    }
 
-    # Combine
-    all_files <-
-      c(
-        downloaded_files,
-        unlist(zipped_files$Name)
-      )
+      # Combine
+      all_files <-
+        c(
+          downloaded_files,
+          unlist(zipped_files$Name)
+        )
+    } else {
+      all_files <- downloaded_files
+    }
 
     # CHECK for patterns
     if (any(grepl(all_files,
