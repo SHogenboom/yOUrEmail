@@ -69,12 +69,12 @@ draft_grade_email <- function(outlook,
   } else if (course_id == "PB0412") {
     # Experimenteel
     examinator_name <- "Ron Pat-El"
-    examinator_email <- "ron.pat-el@ou.nl"
+    examinator_email <- "oeo-vragen@ou.nl"
     pass <- 5.5
     compensation <- 5
   } else if (course_id == "PB1612") {
-    # Cross-Sectioneel
-    examinator_name <- "Julia Fischmann & Gjalt-Jorn Peters"
+    # Kwalitatief
+    examinator_name <- "Thomas Gültzow, Julia Fischmann, & Vanessa Torres van Grinsven"
     examinator_email <- "oko-vragen@ou.nl"
     pass <- 5.5
     compensation <- NA
