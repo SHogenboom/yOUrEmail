@@ -160,7 +160,7 @@ draft_grade_email_OKO <- function(outlook,
       glue::glue("De herkansing kun je straks direct aan mij mailen. Graag ontvang ik een versie waarin de wijzigingen zijn bijgehouden.
                Ik hoop dat je met mijn feedback in het beoordelingsformulier genoeg aanknopingspunten hebt voor verbetering.
                Als je tijdens de herkansing nog vragen hebt over de betekenis van de feedback - schroom dan niet om contact met mij op te nemen!
-               Voor inhoudelijke vragen kun je ook altijd terecht op het discussieforum van de cursus of op [https://onderzoeksvragen.ou.nl/](https://onderzoeksvragen.ou.nl/).")
+               Voor inhoudelijke vragen kun je ook altijd terecht op het discussieforum van de cursus.")
   }
 
   # Closure

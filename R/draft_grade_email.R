@@ -184,7 +184,7 @@ draft_grade_email <- function(outlook,
                Moet je dit deeltentamen toch herkansen? Dan kun je de herkansing straks direct aan mij mailen.
                Ik hoop dat je met mijn feedback genoeg aanknopingspunten hebt voor verbetering.
                Als je tijdens de herkansing nog vragen hebt over de betekenis van de feedback - schroom dan niet om contact met mij op te nemen!
-               Voor inhoudelijke vragen kun je ook altijd terecht op het discussieforum van de cursus en op [https://onderzoeksvragen.ou.nl/](https://onderzoeksvragen.ou.nl/).
+               Voor inhoudelijke vragen kun je ook altijd terecht op het discussieforum van de cursus.
 
                ")
 
